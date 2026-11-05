@@ -518,3 +518,35 @@ a.pcard:hover { background: var(--hover); border-color: var(--stage); box-shadow
 
 .home-m .mh { min-height: 52px; align-items: flex-start; }
 @media (max-width: 600px) { .home-m .mh { min-height: 0; } .home-m .chip { display: none; } }
+
+/* ---------- interactive payback chart ---------- */
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+#chart-host { position: relative; }
+.chart { touch-action: pan-y; -webkit-tap-highlight-color: transparent; }
+.chart:focus { outline: none; }
+.chart:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 4px; }
+.chart [hidden] { display: none; }
+.chart .xh-v, .chart .xh-h { stroke: #59616D; stroke-width: 1; stroke-dasharray: 4 4; }
+.chart .xpill rect { fill: var(--ink); }
+.chart .xpill text { fill: #fff; font-size: 11px; }
+.chart text.hot { fill: var(--ink); font-weight: 600; }
+.chart .pb-label { fill: var(--ink); font-size: 11px; font-weight: 500; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+.ctip { position: absolute; z-index: 5; min-width: 200px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; pointer-events: none; font-size: 12px; line-height: 1.5; }
+.ctip[hidden] { display: none; }
+.ctip .ch { font-family: var(--font-mono); font-weight: 600; margin-bottom: 4px; }
+.ctip .cr { display: flex; align-items: baseline; gap: 8px; font-family: var(--font-mono); white-space: nowrap; }
+.ctip .cr i { width: 10px; height: 2px; align-self: center; flex: none; }
+.ctip .cn { min-width: 3.4em; }
+.ctip .cv { margin-left: auto; font-weight: 600; }
+.ctip .ok { color: #0F6E64; }
+.ctip .go { color: var(--ink-soft); }
+.ctip .tot { border-top: 1px solid var(--line); margin-top: 4px; padding-top: 4px; color: var(--ink-soft); }
+.ctip .tot .cn { padding-left: 18px; }
+.chart-legend .lg { display: inline-flex; align-items: center; gap: 8px; background: none; border: 0; padding: 4px 2px; font: inherit; color: inherit; cursor: pointer; }
+.chart-legend .lg:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 4px; }
+.chart-legend .lg[aria-pressed="false"] { opacity: .45; text-decoration: line-through; }
+@media (prefers-reduced-motion: no-preference) {
+  .chart .xh-v, .chart .xh-h, .chart .xh-dot { transition: none; }
+  .ctip { transition: opacity .1s; }
+}
+@media (prefers-reduced-motion: reduce) { .chart *, .ctip { transition: none !important; } }

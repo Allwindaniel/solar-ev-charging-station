@@ -531,8 +531,8 @@
     });
     html += "</tbody></table></div>";
     html += '<div class="chart-card"><h3>Cumulative revenue vs total price</h3><p class="small">Where each line crosses the dashed line is the payback.</p>' +
-      '<div id="chart-host"></div><ul class="chart-legend">' + gen.scenarios.map(function (s) {
-        return '<li><i style="background:var(--chart-' + s.id + ')"></i>' + esc(s.name) + ": about " + s.paybackYears + " years</li>";
+      '<div id="chart-host"></div><p class="sr-only" id="chart-live" aria-live="polite"></p><ul class="chart-legend">' + gen.scenarios.map(function (s) {
+        return '<li><button type="button" class="lg" data-id="' + s.id + '" aria-pressed="true"><i style="background:var(--chart-' + s.id + ')"></i>' + esc(s.name) + ": about " + s.paybackYears + " years</button></li>";
       }).join("") + "</ul></div></section>";
 
     // 5. Assumptions, notes
@@ -556,7 +556,19 @@
   }
 
   /* ---------- payback line chart (inline SVG, no library) ---------- */
+  var chartHidden = {};   // scenario ids toggled off via the legend (survives redraws)
+  var chartDetach = null; // removes the listeners of the currently drawn chart
+
+  // ₹ formatter for readouts: crore / lakh / plain rupees (Indian grouping)
+  function inrShort(v) {
+    var a = Math.abs(v);
+    if (a >= 1e7) return "₹" + (v / 1e7).toFixed(2) + " cr";
+    if (a >= 1e5) return "₹" + (v / 1e5).toFixed(1) + " L";
+    return "₹" + Math.round(v).toLocaleString("en-IN");
+  }
+
   function drawChart(host) {
+    if (chartDetach) { chartDetach(); chartDetach = null; }
     var gen = S.costSummary.generation;
     var total = S.costSummary.totalPrice.total;
     var years = S.horizonYears;
@@ -570,15 +582,18 @@
     var top = Math.ceil(maxV / step) * step;
     function X(y) { return m.l + (y / years) * iw; }
     function Y(v) { return m.t + ih - (v / top) * ih; }
+    var ids = ["low", "base", "high"];
+    function short(id) { return scen(id).name.replace(/\s*scenario$/i, ""); }
+    function scen(id) { return gen.scenarios.filter(function (x) { return x.id === id; })[0]; }
 
-    var svg = '<svg class="chart" viewBox="0 0 ' + W + " " + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="Cumulative revenue over 30 years for low, base and high scenarios against the total price">';
+    var svg = '<svg class="chart" viewBox="0 0 ' + W + " " + H + '" width="' + W + '" height="' + H + '" tabindex="0" role="group" aria-label="Cumulative revenue over 30 years for low, base and high scenarios against the total price. Use left and right arrow keys to move between years." aria-describedby="chart-live">';
     for (var v = 0; v <= top; v += step) {
       svg += '<line class="grid" x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + Y(v) + '" y2="' + Y(v) + '"/>' +
-        '<text x="' + (m.l - 8) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + (v === 0 ? "₹0" : "₹" + (v / 1e7) + " cr") + "</text>";
+        '<text class="ty" data-v="' + v + '" x="' + (m.l - 8) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + (v === 0 ? "₹0" : "₹" + (v / 1e7) + " cr") + "</text>";
     }
     for (var y = 0; y <= years; y += 5) {
       svg += '<line class="axis" x1="' + X(y) + '" x2="' + X(y) + '" y1="' + (m.t + ih) + '" y2="' + (m.t + ih + 5) + '"/>' +
-        '<text x="' + X(y) + '" y="' + (m.t + ih + 20) + '" text-anchor="middle">' + y + "</text>";
+        '<text class="tx" data-y="' + y + '" x="' + X(y) + '" y="' + (m.t + ih + 20) + '" text-anchor="middle">' + y + "</text>";
     }
     svg += '<text x="' + (m.l + iw / 2) + '" y="' + (H - 4) + '" text-anchor="middle">Year</text>';
     svg += '<line class="axis" x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + (m.t + ih) + '" y2="' + (m.t + ih) + '"/>';
@@ -590,33 +605,187 @@
       '<text class="total-label" x="' + (W - m.r - 4) + '" y="' + (ty + 16) + '" text-anchor="end">' + esc(tlabel) + "</text>";
 
     // revenue lines. Data covers years 1–30; each line starts at (0, 0) so it reads as cumulative.
-    ["low", "base", "high"].forEach(function (id) {
-      var s = gen.scenarios.filter(function (x) { return x.id === id; })[0];
+    var anchor = { high: "end", base: "middle", low: "start" };
+    var lift = { high: 10, base: 26, low: 10 };
+    ids.forEach(function (id) {
+      var s = scen(id);
       var cum = gen.cumulativeRevenue[id];
       var d = "M" + X(0) + " " + Y(0);
       cum.forEach(function (val, i) { d += " L" + X(i + 1).toFixed(1) + " " + Y(val).toFixed(1); });
-      svg += '<path class="ln ' + id + '" stroke="var(--chart-' + id + ')" d="' + d + '"><title>' + esc(s.name) + "</title></path>";
-      // crossing = payback (linear interpolation between year ends)
-      for (var i = 0; i < cum.length; i++) {
-        if (cum[i] >= total) {
-          var prevV = i ? cum[i - 1] : 0;
-          var yr = i + (total - prevV) / (cum[i] - prevV);
-          svg += '<line class="drop" stroke="var(--chart-' + id + ')" x1="' + X(yr) + '" x2="' + X(yr) + '" y1="' + ty + '" y2="' + (m.t + ih) + '"/>' +
-            '<circle cx="' + X(yr) + '" cy="' + ty + '" r="5" fill="var(--surface)" stroke="var(--chart-' + id + ')" stroke-width="2.5"/>';
-          break;
-        }
-      }
+      svg += '<g class="sc" data-id="' + id + '"' + (chartHidden[id] ? " hidden" : "") + '><path class="ln ' + id + '" stroke="var(--chart-' + id + ')" d="' + d + '"/>';
+      // payback marker at x = scenario.paybackYears, on the dashed total-price line
+      var px = X(s.paybackYears);
+      svg += '<line class="drop" stroke="var(--chart-' + id + ')" x1="' + px + '" x2="' + px + '" y1="' + ty + '" y2="' + (m.t + ih) + '"/>' +
+        '<circle cx="' + px + '" cy="' + ty + '" r="5" fill="var(--surface)" stroke="var(--chart-' + id + ')" stroke-width="2.5"/>' +
+        '<text class="pb-label" x="' + (px + (id === "high" ? -4 : id === "low" ? 4 : 0)) + '" y="' + (ty - lift[id]) + '" text-anchor="' + anchor[id] + '">' + esc(short(id)) + " · " + s.paybackYears + " yrs</text></g>";
     });
-    host.innerHTML = svg + "</svg>";
+
+    // crosshair layer (hidden until the pointer / keyboard moves it)
+    svg += '<g class="xh" hidden pointer-events="none">' +
+      '<line class="xh-v" y1="' + m.t + '" y2="' + (m.t + ih) + '"/><line class="xh-h" x1="' + m.l + '" x2="' + (W - m.r) + '"/>';
+    ids.forEach(function (id) { svg += '<circle class="xh-dot" data-id="' + id + '" r="4.5" fill="var(--chart-' + id + ')" stroke="var(--surface)" stroke-width="2"/>'; });
+    svg += '<g class="xpill px"><rect height="18" rx="3"/><text y="13" text-anchor="middle"></text></g>' +
+      '<g class="xpill py"><rect height="18" rx="3"/><text y="13" text-anchor="middle"></text></g></g>';
+    host.innerHTML = svg + '</svg><div class="ctip" id="chart-tip" role="tooltip" hidden></div>';
+
+    /* ----- interaction ----- */
+    var el = $("svg.chart", host), tip = $("#chart-tip", host), live = $("#chart-live");
+    var xh = $(".xh", el), vLine = $(".xh-v", el), hLine = $(".xh-h", el);
+    var pillX = $(".px", el), pillY = $(".py", el);
+    var dots = {}; $$(".xh-dot", el).forEach(function (c) { dots[c.getAttribute("data-id")] = c; });
+    var tickX = $$(".tx", el), tickY = $$(".ty", el);
+    var year = null, hv = 0, frame = 0, pending = null, captured = false;
+
+    function setPill(g, text, cx, cy, minX, maxX) {
+      var t = $("text", g), r = $("rect", g);
+      t.textContent = text;
+      var w = text.length * 6.6 + 12;
+      var x = Math.max(minX, Math.min(maxX - w, cx - w / 2));
+      r.setAttribute("x", x); r.setAttribute("y", cy); r.setAttribute("width", w);
+      t.setAttribute("x", x + w / 2); t.setAttribute("y", cy + 13);
+    }
+    function hide() {
+      pending = null;
+      if (frame) { cancelAnimationFrame(frame); frame = 0; }
+      year = null; xh.setAttribute('hidden',''); tip.hidden = true;
+      tickX.concat(tickY).forEach(function (t) { t.classList.remove("hot"); });
+    }
+    function toSvg(cx, cy) {
+      var ctm = el.getScreenCTM();
+      if (!ctm) return null;
+      var p = el.createSVGPoint(); p.x = cx; p.y = cy;
+      return p.matrixTransform(ctm.inverse());
+    }
+    function paint() {
+      frame = 0;
+      if (!pending) return;
+      var yr = pending.year, val = pending.value;
+      pending = null;
+      year = yr; hv = val;
+      var vx = X(yr), hy = Y(val);
+      xh.removeAttribute('hidden');
+      vLine.setAttribute("x1", vx); vLine.setAttribute("x2", vx);
+      hLine.setAttribute("y1", hy); hLine.setAttribute("y2", hy);
+      setPill(pillX, "Year " + yr, vx, m.t + ih - 18, m.l, W - 2);
+      setPill(pillY, inrShort(val), m.l + 24, hy - 9, m.l, W - 2);
+      pillY.querySelector("rect").setAttribute("y", Math.max(m.t, Math.min(m.t + ih - 18, hy - 9)));
+      pillY.querySelector("text").setAttribute("y", +pillY.querySelector("rect").getAttribute("y") + 13);
+      // pill y-axis anchored at left edge of plot
+      var yw = +pillY.querySelector("rect").getAttribute("width");
+      pillY.querySelector("rect").setAttribute("x", m.l);
+      pillY.querySelector("text").setAttribute("x", m.l + yw / 2);
+      tickX.forEach(function (t) { t.classList.toggle("hot", +t.getAttribute("data-y") === yr); });
+      tickY.forEach(function (t) { t.classList.toggle("hot", Math.abs(+t.getAttribute("data-v") - val) < top * 0.04); });
+      var rows = "";
+      ids.forEach(function (id) {
+        var s = scen(id), c = gen.cumulativeRevenue[id][yr - 1];
+        var dot = dots[id];
+        if (chartHidden[id]) { dot.setAttribute("hidden", ""); return; }
+        dot.removeAttribute("hidden");
+        dot.setAttribute("cx", vx); dot.setAttribute("cy", Y(c));
+        var status = c >= total ? '<span class="ok">✓ recovered</span>' : '<span class="go">' + inrShort(total - c) + " to go</span>";
+        rows += '<div class="cr"><i style="background:var(--chart-' + id + ')"></i><span class="cn">' + esc(short(id)) + '</span><span class="cv">' + inrShort(c) + "</span>" + status + "</div>";
+      });
+      tip.innerHTML = '<div class="ch">Year ' + yr + "</div>" + rows +
+        '<div class="cr tot"><span class="cn">Total price</span><span class="cv">' + inrShort(total) + "</span></div>";
+      tip.hidden = false;
+      // follow the cursor, flip sides near the edges, stay inside the chart
+      var k = host.clientWidth / W, tw = tip.offsetWidth, th = tip.offsetHeight;
+      var px = vx * k, py = hy * k, gap = 14;
+      var left = px + gap + tw > host.clientWidth ? px - gap - tw : px + gap;
+      var topPx = py - th / 2;
+      left = Math.max(0, Math.min(host.clientWidth - tw, left));
+      topPx = Math.max(0, Math.min(host.clientHeight - th, topPx));
+      tip.style.left = left + "px"; tip.style.top = topPx + "px";
+    }
+    function queue(yr, value) {
+      pending = { year: yr, value: value };
+      if (!frame) frame = requestAnimationFrame(paint);
+    }
+    function fromPointer(e, clamp) {
+      var p = toSvg(e.clientX, e.clientY);
+      if (!p) return;
+      var inside = p.x >= m.l && p.x <= W - m.r && p.y >= m.t && p.y <= m.t + ih;
+      if (!inside && !clamp) { hide(); return; }
+      var yr = Math.max(1, Math.min(years, Math.round((p.x - m.l) / iw * years)));
+      var yy = Math.max(m.t, Math.min(m.t + ih, p.y));
+      queue(yr, (m.t + ih - yy) / ih * top);
+    }
+    function onMove(e) { fromPointer(e, captured || e.pointerType === "touch"); }
+    function onDown(e) {
+      if (e.pointerType === "touch" || e.pointerType === "pen") {
+        captured = true;
+        try { el.setPointerCapture(e.pointerId); } catch (x) {}
+      }
+      fromPointer(e, true);
+    }
+    function onUp(e) { captured = false; try { el.releasePointerCapture(e.pointerId); } catch (x) {} }
+    function onLeave(e) { if (e.pointerType !== "touch" && !captured) hide(); }
+    function onKey(e) {
+      var yr = year || (e.key === "End" ? years : 1), nx = null;
+      if (e.key === "ArrowRight") nx = year ? Math.min(years, year + 1) : 1;
+      else if (e.key === "ArrowLeft") nx = year ? Math.max(1, year - 1) : 1;
+      else if (e.key === "Home") nx = 1;
+      else if (e.key === "End") nx = years;
+      else if (e.key === "Escape") { hide(); return; }
+      if (nx === null) return;
+      e.preventDefault();
+      // keep the horizontal line on the first visible line at that year
+      var vis = ids.filter(function (id) { return !chartHidden[id]; });
+      var ref = vis.indexOf("base") >= 0 ? "base" : vis[0];
+      queue(nx, ref ? gen.cumulativeRevenue[ref][nx - 1] : total);
+      if (ref) live.textContent = "Year " + nx + ": " + vis.map(function (id) {
+        return short(id) + " " + inrShort(gen.cumulativeRevenue[id][nx - 1]);
+      }).join(", ") + ". Total price " + inrShort(total) + ".";
+    }
+    function onOutside(e) { if (captured) return; if (!el.contains(e.target)) hide(); }
+    el.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerdown", onDown);
+    el.addEventListener("pointerup", onUp);
+    el.addEventListener("pointercancel", onUp);
+    el.addEventListener("pointerleave", onLeave);
+    el.addEventListener("keydown", onKey);
+    el.addEventListener("blur", hide);
+    document.addEventListener("pointerdown", onOutside);
+    chartDetach = function () {
+      if (frame) cancelAnimationFrame(frame);
+      el.removeEventListener("pointermove", onMove);
+      el.removeEventListener("pointerdown", onDown);
+      el.removeEventListener("pointerup", onUp);
+      el.removeEventListener("pointercancel", onUp);
+      el.removeEventListener("pointerleave", onLeave);
+      el.removeEventListener("keydown", onKey);
+      el.removeEventListener("blur", hide);
+      document.removeEventListener("pointerdown", onOutside);
+    };
+    // re-apply crosshair after a redraw (e.g. legend toggle) if it was showing
+    host._refresh = function () { if (year) queue(year, hv); };
   }
 
   function initChart() {
     var host = $("#chart-host");
     var lastW = 0;
+    chartHidden = {};
     function draw() { var w = host.clientWidth; if (w !== lastW) { lastW = w; drawChart(host); } }
+    function onLegend(e) {
+      var b = e.target.closest ? e.target.closest(".lg") : null;
+      if (!b) return;
+      var id = b.getAttribute("data-id");
+      chartHidden[id] = !chartHidden[id];
+      b.setAttribute("aria-pressed", chartHidden[id] ? "false" : "true");
+      var g = $('.sc[data-id="' + id + '"]', host);
+      if (g) g.toggleAttribute('hidden', !!chartHidden[id]);
+      if (host._refresh) host._refresh();
+    }
+    var legend = $(".chart-legend");
     draw();
     window.addEventListener("resize", draw);
-    cleanup = function () { window.removeEventListener("resize", draw); };
+    legend.addEventListener("click", onLegend);
+    cleanup = function () {
+      window.removeEventListener("resize", draw);
+      legend.removeEventListener("click", onLegend);
+      if (chartDetach) { chartDetach(); chartDetach = null; }
+    };
   }
 
   /* =====================================================================
