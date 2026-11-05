@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solar EV Charging Station</title>
+  <meta name="description" content="Engineering walkthrough of a solar-powered DC fast-charging station for electric vehicles: parts, costs and system overview.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23E8A317'/%3E%3Cpath d='M18 4 8 18h7l-1 10 10-14h-7z' fill='%2315181D'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#/"><i aria-hidden="true"></i><span>Solar EV Station</span></a>
+      <nav class="nav" id="nav" aria-label="Main">
+        <a class="nav-link" href="#/" data-route="home">Home</a>
+        <div class="dropdown" id="parts-dd">
+          <button class="nav-link dd-btn" id="parts-btn" aria-expanded="false" aria-controls="parts-menu" data-route="parts">Parts <span class="count" id="parts-count"></span></button>
+          <div class="dd-menu" id="parts-menu" hidden></div>
+        </div>
+        <a class="nav-link" href="#/cost-summary" data-route="cost-summary">Cost Summary</a>
+        <a class="nav-link" href="#/system" data-route="system">System Overview</a>
+      </nav>
+      <span class="pill hdr-price" id="hdr-price"><i aria-hidden="true"></i><span></span></span>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1"></main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <a href="#/glossary">Glossary</a>
+      <span>All prices are estimates as of Nov 2026</span>
+    </div>
+  </footer>
+
+  <nav class="tabbar" id="tabbar" aria-label="Pages">
+    <a href="#/" data-route="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/></svg>Home</a>
+    <a href="#/parts" data-route="parts"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/></svg>Parts</a>
+    <a href="#/cost-summary" data-route="cost-summary"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Cost</a>
+    <a href="#/system" data-route="system"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 12h5l5-6M12 12l5 6"/></svg>System</a>
+    <a href="#/glossary" data-route="glossary"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11a3 3 0 013 3v13H8a3 3 0 01-3-3zM5 17a3 3 0 013-3h11"/></svg>Glossary</a>
+  </nav>
+
+  <noscript><p style="padding:24px">This site needs JavaScript enabled.</p></noscript>
+
+  <!-- Station illustration. Flat 2D side view, shown assembled.
+       Each part = <g class="part" data-part="N"> containing one or more
+       <g class="piece"> children; the explode config in app.js moves pieces
+       (in this order) so multi-piece parts can spread out. -->
+  <template id="station-svg">
+    <svg class="station" viewBox="-10 -10 1230 720" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Illustration of the solar EV charging station">
+      <!-- ground -->
+      <rect class="soil" x="0" y="590" width="1200" height="110"/>
+      <line class="ground-line" x1="0" y1="560" x2="1200" y2="560"/>
+
+      <!-- faint car for scale (decorative, not clickable) -->
+      <g class="car" aria-hidden="true">
+        <path d="M240 548V530Q240 520 254 518L284 512Q304 478 346 476H416Q452 478 474 508L494 514Q506 517 506 530V548Z"/>
+        <path d="M312 512Q324 490 348 490H372V512ZM384 512V490H414Q436 492 450 512Z"/>
+        <circle cx="292" cy="548" r="22"/><circle cx="452" cy="548" r="22"/>
+        <circle cx="292" cy="548" r="9"/><circle cx="452" cy="548" r="9"/>
+      </g>
+
+      <!-- 13 · civil work: base slab + transformer -->
+      <g class="part stage-foundation" data-part="13">
+        <g class="piece">
+          <rect class="o f-concrete" x="30" y="560" width="1160" height="30"/>
+          <path class="thin" d="M150 560V590M300 560V590M450 560V590M600 560V590M750 560V590M900 560V590M1050 560V590"/>
+          <g class="badge" transform="translate(70 575)"><circle r="13"/><text y="5">13</text></g>
+        </g>
+        <g class="piece">
+          <rect class="o f-metal" x="1100" y="452" width="80" height="108" rx="3"/>
+          <path class="thin" d="M1108 466V548M1118 466V548M1128 466V548M1138 466V548M1148 466V548M1158 466V548M1168 466V548"/>
+          <rect class="o f-white" x="1108" y="436" width="10" height="16"/><rect class="o f-white" x="1135" y="436" width="10" height="16"/><rect class="o f-white" x="1162" y="436" width="10" height="16"/>
+          <path class="o" d="M1113 436V424M1140 436V424M1167 436V424"/>
+          <circle class="o f-dark" cx="1113" cy="422" r="4"/><circle class="o f-dark" cx="1140" cy="422" r="4"/><circle class="o f-dark" cx="1167" cy="422" r="4"/>
+        </g>
+      </g>
+
+      <!-- 2 · steel canopy: two columns + frame over one bay -->
+      <g class="part stage-generation" data-part="2">
+        <g class="piece">
+          <rect class="o f-metal" x="200" y="250" width="16" height="310"/>
+          <rect class="o f-metal" x="590" y="250" width="16" height="310"/>
+          <rect class="o f-metal" x="150" y="238" width="500" height="12"/>
+          <path class="o f-metal" d="M216 250L246 250L216 280Z"/>
+          <path class="o f-metal" d="M590 250L560 250L590 280Z"/>
+          <path class="o" d="M208 238V219M400 238V205M598 238V192"/>
+          <rect class="o f-dark" x="192" y="556" width="32" height="4"/>
+          <rect class="o f-dark" x="582" y="556" width="32" height="4"/>
+          <g class="badge" transform="translate(598 330)"><circle r="14"/><text y="5">2</text></g>
+        </g>
+      </g>
+
+      <!-- 1 · panel row (tilted) -->
+      <g class="part stage-generation" data-part="1">
+        <g class="piece">
+          <g transform="translate(150 222) rotate(-3.8)">
+            <rect class="o f-glass" x="0" y="-16" width="500" height="16"/>
+            <path class="cells" d="M50 -16V0M100 -16V0M150 -16V0M200 -16V0M250 -16V0M300 -16V0M350 -16V0M400 -16V0M450 -16V0M0 -8H500"/>
+          </g>
+          <g class="badge" transform="translate(300 160)"><circle r="14"/><text y="5">1</text></g>
+        </g>
+      </g>
+
+      <!-- 3 · cleaning robot on the panel row -->
+      <g class="part stage-generation" data-part="3">
+        <g class="piece">
+          <g transform="translate(420 188) rotate(-3.8)">
+            <rect class="o f-metal" x="-22" y="-20" width="44" height="14" rx="4"/>
+            <rect class="o f-dark" x="-28" y="-22" width="5" height="20" rx="2"/>
+            <circle class="o f-white" cx="-13" cy="-5" r="5"/><circle class="o f-white" cx="13" cy="-5" r="5"/>
+            <circle class="led" cx="12" cy="-13" r="2"/>
+          </g>
+          <g class="badge" transform="translate(440 140)"><circle r="14"/><text y="5">3</text></g>
+        </g>
+      </g>
+
+      <!-- 4 · combiner box on the left column + cable running down -->
+      <g class="part stage-conversion" data-part="4">
+        <g class="piece">
+          <path class="cable" d="M234 350V556H690V515H705"/>
+          <rect class="o f-metal" x="218" y="300" width="34" height="50" rx="3"/>
+          <rect class="thin f-none" x="223" y="306" width="24" height="38" rx="2"/>
+          <circle class="led" cx="235" cy="325" r="2.5"/>
+          <g class="badge" transform="translate(274 325)"><circle r="14"/><text y="5">4</text></g>
+        </g>
+      </g>
+
+      <!-- 5 · inverter cabinet -->
+      <g class="part stage-conversion" data-part="5">
+        <g class="piece">
+          <rect class="o f-metal" x="705" y="420" width="70" height="140" rx="4"/>
+          <rect class="o f-dark" x="715" y="434" width="50" height="26" rx="2"/>
+          <path class="thin" d="M715 482H765M715 490H765M715 498H765M715 506H765M715 514H765M715 522H765"/>
+          <circle class="led" cx="722" cy="470" r="2.5"/><circle class="led" cx="732" cy="470" r="2.5"/>
+          <g class="badge" transform="translate(740 400)"><circle r="14"/><text y="5">5</text></g>
+        </g>
+      </g>
+
+      <!-- 6 · battery cabinet (larger) -->
+      <g class="part stage-conversion" data-part="6">
+        <g class="piece">
+          <rect class="o f-metal" x="800" y="370" width="125" height="170" rx="4"/>
+          <path class="o" d="M862 370V540"/>
+          <rect class="o f-dark" x="814" y="392" width="34" height="18" rx="2"/>
+          <rect class="o f-dark" x="876" y="392" width="34" height="18" rx="2"/>
+          <path class="thin" d="M814 430H848M814 438H848M814 446H848M814 454H848M876 430H910M876 438H910M876 446H910M876 454H910"/>
+          <rect class="o f-white" x="824" y="484" width="26" height="14" rx="2"/><rect class="o f-white" x="850" y="488" width="3" height="6"/>
+          <circle class="led" cx="824" cy="514" r="2.5"/>
+          <g class="badge" transform="translate(862 348)"><circle r="14"/><text y="5">6</text></g>
+        </g>
+      </g>
+
+      <!-- 7 · plinth + extinguisher + 2 bollards -->
+      <g class="part stage-conversion" data-part="7">
+        <g class="piece">
+          <rect class="o f-concrete" x="788" y="540" width="149" height="20"/>
+        </g>
+        <g class="piece">
+          <rect class="o f-red" x="945" y="530" width="12" height="30" rx="5"/>
+          <rect class="o f-dark" x="948" y="524" width="6" height="6"/>
+          <path class="o" d="M954 526Q962 524 962 536"/>
+        </g>
+        <g class="piece">
+          <rect class="o f-yellow" x="968" y="520" width="10" height="40" rx="4"/>
+          <rect class="o f-yellow" x="986" y="520" width="10" height="40" rx="4"/>
+          <path class="thin" d="M968 532H978M968 544H978M986 532H996M986 544H996"/>
+          <g class="badge" transform="translate(975 492)"><circle r="14"/><text y="5">7</text></g>
+        </g>
+      </g>
+
+      <!-- 8 · tall LT panel with meter window -->
+      <g class="part stage-distribution" data-part="8">
+        <g class="piece">
+          <rect class="o f-metal" x="1015" y="340" width="60" height="220" rx="3"/>
+          <rect class="o f-dark" x="1025" y="358" width="40" height="40" rx="3"/>
+          <rect class="o f-glass-lt" x="1029" y="362" width="32" height="14"/>
+          <path class="thin" d="M1025 412H1065M1025 420H1065M1025 428H1065"/>
+          <path class="o" d="M1020 450H1070"/>
+          <rect class="o f-dark" x="1060" y="490" width="4" height="16" rx="2"/>
+          <g class="badge" transform="translate(1045 318)"><circle r="14"/><text y="5">8</text></g>
+        </g>
+      </g>
+
+      <!-- 9 · charger pillar with screen and cable -->
+      <g class="part stage-distribution" data-part="9">
+        <g class="piece">
+          <path class="cable" d="M530 490C516 494 512 506 504 520"/>
+          <rect class="o f-white" x="496" y="518" width="10" height="8" rx="2"/>
+          <rect class="o f-metal" x="530" y="400" width="40" height="160" rx="6"/>
+          <rect class="o f-dark" x="537" y="415" width="26" height="30" rx="2"/>
+          <rect class="o f-glass-lt" x="540" y="418" width="20" height="12"/>
+          <rect class="o f-dark" x="540" y="458" width="20" height="8" rx="2"/>
+          <circle class="led" cx="550" cy="482" r="3"/>
+          <g class="badge" transform="translate(550 378)"><circle r="14"/><text y="5">9</text></g>
+        </g>
+      </g>
+
+      <!-- 10 · lightning arrester (top of canopy) + earth pit (ground) -->
+      <g class="part stage-operations" data-part="10">
+        <g class="piece">
+          <rect class="o f-metal" x="626" y="172" width="20" height="6"/>
+          <path class="o" d="M636 172V124"/>
+          <path class="o f-metal" d="M631 126H641L636 104Z"/>
+          <path class="earth-wire" d="M636 190V615"/>
+          <g class="badge" transform="translate(668 120)"><circle r="14"/><text y="5">10</text></g>
+        </g>
+        <g class="piece">
+          <rect class="o f-concrete" x="606" y="612" width="60" height="6"/>
+          <rect class="o f-none dashed" x="606" y="618" width="60" height="56"/>
+          <path class="o" d="M636 618V640M618 640H654M624 650H648M630 660H642"/>
+        </g>
+      </g>
+
+      <!-- 11 · gateway box with antenna -->
+      <g class="part stage-operations" data-part="11">
+        <g class="piece">
+          <path class="o" d="M673 520V560"/>
+          <path class="o" d="M665 480V450"/>
+          <circle class="o f-white" cx="665" cy="448" r="3"/>
+          <path class="thin" d="M657 442Q665 434 673 442M653 436Q665 424 677 436"/>
+          <rect class="o f-metal" x="656" y="480" width="34" height="40" rx="3"/>
+          <circle class="led" cx="680" cy="492" r="2.5"/><circle class="led" cx="680" cy="502" r="2.5"/>
+          <g class="badge" transform="translate(692 440)"><circle r="14"/><text y="5">11</text></g>
+        </g>
+      </g>
+
+      <!-- 12 · highway sign + CCTV pole + payment kiosk -->
+      <g class="part stage-operations" data-part="12">
+        <g class="piece">
+          <path class="o" d="M44 404V560M84 404V560"/>
+          <rect class="o f-sign" x="28" y="350" width="72" height="54" rx="4"/>
+          <path class="bolt" d="M66 358L50 382H62L58 398L78 372H66Z"/>
+        </g>
+        <g class="piece">
+          <path class="pole" d="M115 560V344"/>
+          <rect class="o f-dark" x="112" y="332" width="36" height="14" rx="3"/>
+          <circle class="o f-white" cx="148" cy="339" r="4"/>
+        </g>
+        <g class="piece">
+          <rect class="o f-metal" x="140" y="440" width="40" height="120" rx="4"/>
+          <rect class="o f-dark" x="147" y="452" width="26" height="22" rx="2"/>
+          <rect class="o f-glass-lt" x="150" y="455" width="20" height="10"/>
+          <rect class="o f-dark" x="148" y="484" width="24" height="6" rx="2"/>
+          <path class="dots" d="M150 504H170M150 514H170M150 524H170"/>
+          <g class="badge" transform="translate(160 418)"><circle r="14"/><text y="5">12</text></g>
+        </g>
+      </g>
+    </svg>
+  </template>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

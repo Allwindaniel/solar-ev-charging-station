@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><title>Spec Overview</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary-fixed": "#ffdeae", "surface-dim": "#d8dae1", "inverse-surface": "#2e3036", "surface-bright": "#f8f9ff", "surface-container": "#ecedf5", "on-surface": "#191c21", "tertiary-fixed-dim": "#b0c6ff", "outline": "#837561", "surface-container-lowest": "#ffffff", "surface": "#f8f9ff", "error": "#ba1a1a", "on-error-container": "#93000a", "error-container": "#ffdad6", "surface-container-high": "#e6e8ef", "on-secondary-fixed": "#00201c", "on-tertiary": "#ffffff", "secondary": "#006a60", "tertiary": "#0358cb", "on-error": "#ffffff", "inverse-on-surface": "#eff0f8", "tertiary-fixed": "#d9e2ff", "on-secondary-container": "#006f64", "on-primary-container": "#5b3d00", "surface-container-low": "#f2f3fa", "primary-container": "#e8a317", "secondary-container": "#8cf1e2", "on-primary-fixed-variant": "#604100", "primary-fixed-dim": "#ffba3e", "on-secondary-fixed-variant": "#005048", "outline-variant": "#d6c4ad", "secondary-fixed-dim": "#72d8c9", "secondary-fixed": "#8ff4e4", "on-primary": "#ffffff", "on-tertiary-container": "#003e95", "tertiary-container": "#8eafff", "on-surface-variant": "#514534", "surface-container-highest": "#e1e2e9", "inverse-primary": "#ffba3e", "background": "#f8f9ff", "on-tertiary-fixed-variant": "#00429c", "on-tertiary-fixed": "#001945", "primary": "#7f5700", "surface-variant": "#e1e2e9", "on-secondary": "#ffffff", "surface-tint": "#7f5700", "on-background": "#191c21", "on-primary-fixed": "#281900" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "space-md": "1rem", "space-sm": "0.5rem", "space-xl": "2.5rem", "margin-mobile": "1rem", "space-lg": "1.5rem", "margin": "3rem", "gutter": "1.5rem", "space-xs": "0.25rem", "gutter-mobile": "0.75rem" }, fontFamily: { "display-hero": ["Space Grotesk"], "body-md": ["Inter"], "body-sm": ["Inter"], "headline-lg": ["Space Grotesk"], "headline-sm": ["Space Grotesk"], "body-lg": ["Inter"], "headline-lg-mobile": ["Space Grotesk"], "headline-md": ["Space Grotesk"], "code-metric-md": ["IBM Plex Mono"], "code-metric-lg": ["IBM Plex Mono"], "code-spec-sm": ["IBM Plex Mono"], "display-hero-mobile": ["Space Grotesk"] }, fontSize: { "display-hero": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "600" }], "body-md": ["14px", { lineHeight: "22px", letterSpacing: "0em", fontWeight: "400" }], "body-sm": ["12px", { lineHeight: "18px", letterSpacing: "0.01em", fontWeight: "400" }], "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.015em", fontWeight: "600" }], "headline-sm": ["18px", { lineHeight: "24px", letterSpacing: "0em", fontWeight: "500" }], "body-lg": ["16px", { lineHeight: "26px", letterSpacing: "0em", fontWeight: "400" }], "headline-lg-mobile": ["24px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "600" }], "headline-md": ["22px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "500" }], "code-metric-md": ["14px", { lineHeight: "20px", letterSpacing: "-0.01em", fontWeight: "500" }], "code-metric-lg": ["24px", { lineHeight: "30px", letterSpacing: "-0.02em", fontWeight: "600" }], "code-spec-sm": ["11px", { lineHeight: "16px", letterSpacing: "0.04em", fontWeight: "400" }], "display-hero-mobile": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "600" }] } } } };</script><style>@layer base{html,body{width:100%;margin:0;padding:0;min-height:100%;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface font-body-md flex flex-col min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-gutter-mobile flex items-center justify-between"><div class="flex items-center gap-space-xs"><button aria-label="Navigation Menu" class="w-11 h-11 flex items-center justify-center text-on-surface hover:text-primary transition-colors"><span class="material-symbols-outlined text-[24px]">menu</span></button><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-none">Solar EV Station</span><span class="font-code-spec-sm text-code-spec-sm px-1.5 py-0.5 rounded bg-primary/10 text-primary uppercase font-medium leading-none">SYS-SPEC 2026.4</span></div><span class="text-[10px] font-code-spec-sm text-on-surface-variant uppercase tracking-wider">Corridor Spec Sheet</span></div></div><div class="flex items-center gap-space-xs"><button aria-label="Search Specs" class="w-11 h-11 flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">terminal</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 bg-surface pb-28"><div class="flex flex-col w-full px-gutter-mobile space-y-space-md">
+<!-- System Metadata Tag -->
+<div class="flex items-center justify-between pt-space-xs">
+<div class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-surface-container-high text-on-surface-variant font-code-spec-sm text-code-spec-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span>TECH-SPEC 55K-80D-IN · CAD-STAMP REV 06</span>
+</div>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">LOC: NH-48 KM 142</span>
+</div>
+<!-- Hero Section -->
+<div class="flex flex-col space-y-space-xs">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface tracking-tight">
+      A solar EV charging station, part by part
+    </h1>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+      55 kW canopy solar · 57.5 kWh battery · 80 kW DC fast charger · 30-year view
+    </p>
+<div class="flex items-center gap-space-xs pt-1">
+<button class="h-10 px-4 rounded-lg bg-inverse-surface text-inverse-on-surface font-body-md text-body-md font-medium flex items-center gap-1.5 active:opacity-90" id="btn-explode">
+<span class="material-symbols-outlined text-[18px]">view_in_ar</span>
+<span>Explode view</span>
+</button>
+<div class="h-10 px-3 rounded-lg bg-surface-container flex items-center gap-1.5 text-on-surface font-code-spec-sm text-code-spec-sm">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>13 Active Sub-Systems</span>
+</div>
+</div>
+</div>
+<!-- 2D Architectural Schematic Canvas (Touch Elevation Viewport) -->
+<div class="relative w-full rounded-xl bg-surface-container-low overflow-hidden">
+<!-- CAD Draft Header Bar -->
+<div class="flex items-center justify-between px-3 py-2 bg-surface-container border-b-0 text-on-surface-variant font-code-spec-sm text-code-spec-sm">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px]">architecture</span>
+<span class="font-medium text-on-surface">DWG: SEC-SIDE-ELEVATION-01</span>
+</div>
+<div class="flex items-center gap-2">
+<span>SCALE 1:50 METRIC</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-highest text-[10px] font-medium">CAD-2D</span>
+</div>
+</div>
+<!-- Scrollable Architectural Canvas -->
+<div class="overflow-x-auto relative w-full scroll-smooth" id="schematic-viewport">
+<div class="relative w-[620px] h-[260px] p-3 select-none">
+<!-- Drafting Coordinate Grid Background SVG -->
+<svg class="absolute inset-0 w-full h-full opacity-35 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<pattern height="24" id="cadGrid" patternunits="userSpaceOnUse" width="24">
+<path class="text-outline-variant" d="M 24 0 L 0 0 0 24" fill="none" stroke="currentColor" stroke-width="0.5"></path>
+</pattern>
+</defs>
+<rect fill="url(#cadGrid)" height="100%" width="100%"></rect>
+</svg>
+<!-- Technical Side-Elevation Vector Silhouette -->
+<svg class="absolute inset-0 w-full h-full text-on-surface-variant pointer-events-none" fill="none" viewbox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<!-- Datum line / Ground Plinth -->
+<line stroke="currentColor" stroke-dasharray="8 4" stroke-width="1.5" x1="20" x2="600" y1="210" y2="210"></line>
+<text class="fill-current text-[8px] font-code-spec-sm" x="24" y="222">RL ±0.00 FINISHED ROAD LEVEL</text>
+<!-- Foundation Civil Footing (Item 12) -->
+<rect fill="currentColor" fill-opacity="0.1" height="18" stroke="currentColor" stroke-width="1" width="340" x="70" y="210"></rect>
+<rect fill="currentColor" fill-opacity="0.1" height="18" stroke="currentColor" stroke-width="1" width="130" x="440" y="210"></rect>
+<!-- Steel Canopy Cantilever (Item 2) -->
+<path d="M 120 210 L 120 70 L 360 48" stroke="currentColor" stroke-width="2.5"></path>
+<path d="M 280 210 L 280 58" stroke="currentColor" stroke-width="2.5"></path>
+<path d="M 120 90 L 170 70" stroke="currentColor" stroke-width="1.5"></path>
+<path d="M 280 90 L 330 54" stroke="currentColor" stroke-width="1.5"></path>
+<!-- Solar PV Modules (Item 1) & Cleaning Robot Track (Item 3) -->
+<polygon fill="currentColor" fill-opacity="0.25" points="90,74 380,44 380,38 90,68" stroke="currentColor" stroke-width="1.2"></polygon>
+<line stroke="currentColor" stroke-dasharray="3 3" stroke-width="1" x1="100" x2="370" y1="67" y2="40"></line>
+<!-- Robot unit (Item 3) -->
+<rect fill="#E8A317" height="7" rx="1.5" width="22" x="235" y="47"></rect>
+<!-- Cabling Trunk / DC Combiner Box (Item 4) -->
+<path d="M 124 74 L 124 165 L 140 165" stroke="currentColor" stroke-dasharray="2 2" stroke-width="1.2"></path>
+<rect fill="currentColor" fill-opacity="0.15" height="20" stroke="currentColor" stroke-width="1" width="16" x="140" y="160"></rect>
+<!-- Inverter Cabinet (Item 5) -->
+<rect fill="currentColor" fill-opacity="0.2" height="62" rx="2" stroke="currentColor" stroke-width="1.2" width="26" x="165" y="148"></rect>
+<!-- BESS Battery Cabinet (Item 6) & BMS Unit (Item 7) -->
+<rect fill="currentColor" fill-opacity="0.2" height="78" rx="2" stroke="currentColor" stroke-width="1.2" width="46" x="200" y="132"></rect>
+<rect fill="#0F8B7E" fill-opacity="0.3" height="14" stroke="currentColor" stroke-width="0.8" width="38" x="204" y="136"></rect>
+<!-- Main LT Switchgear (Item 8) -->
+<rect fill="currentColor" fill-opacity="0.2" height="68" rx="2" stroke="currentColor" stroke-width="1.2" width="28" x="254" y="142"></rect>
+<!-- DC Fast Charger Dispenser (Item 9) - HIGHLIGHTED ACTIVE -->
+<rect fill="#2D6CDF" fill-opacity="0.15" height="90" rx="3" stroke="#2D6CDF" stroke-width="2" width="42" x="330" y="120"></rect>
+<rect fill="#2D6CDF" fill-opacity="0.4" height="20" rx="1" width="26" x="338" y="130"></rect>
+<path d="M 368 155 Q 382 170 376 195" stroke="#2D6CDF" stroke-width="2"></path>
+<!-- Payment Kiosk (Item 10) -->
+<rect fill="currentColor" fill-opacity="0.15" height="62" rx="2" stroke="currentColor" stroke-width="1" width="18" x="390" y="148"></rect>
+<!-- CCTV & Sensor Mast (Item 11) -->
+<line stroke="currentColor" stroke-width="2" x1="435" x2="435" y1="210" y2="40"></line>
+<polygon fill="currentColor" points="432,40 445,36 445,46"></polygon>
+<!-- Step-down 100kVA Transformer (Item 13) -->
+<rect fill="currentColor" fill-opacity="0.25" height="64" rx="2" stroke="currentColor" stroke-width="1.2" width="56" x="470" y="146"></rect>
+<circle cx="498" cy="138" r="7" stroke="currentColor" stroke-width="1"></circle>
+<circle cx="498" cy="138" fill="currentColor" r="3"></circle>
+</svg>
+<!-- Interactive Coordinate Hotspots (13 Nodes) -->
+<!-- 1: Solar Panels -->
+<button class="schematic-node absolute left-[155px] top-[46px] -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary-container text-on-primary-container font-code-spec-sm text-[11px] font-semibold flex items-center justify-center pointer-events-auto" onclick="selectNode(1)">01</button>
+<!-- 2: Canopy Steel -->
+<button class="schematic-node absolute left-[120px] top-[110px] -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary-container text-on-primary-container font-code-spec-sm text-[11px] font-semibold flex items-center justify-center pointer-events-auto" onclick="selectNode(2)">02</button>
+<!-- 3: Cleaning Robot -->
+<button class="schematic-node absolute left-[246px] top-[34px] -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary-container text-on-primary-container font-code-spec-sm text-[11px] font-semibold flex items-center justify-center pointer-events-auto" onclick="selectNode(3)">03</button>
+<!-- 4: DC Harness -->
+<button class="schematic-node absolute left-[148px] top-[170px] -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary-container text-on-primary-container font-code-spec-sm text-[11px] font-semibold flex items-center justify-center pointer-events-auto" onclick="selectNode(4)">04</button>
+<!-- 5: Inverter -->
+<button class="schematic-node absolute left-[178px] top-[132px] -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#0F8B7E] text-white font-code-spec-sm text-[11px] font-semibold flex items-center justify-center pointer-events-auto" onclick="selectNode(5)">05</button>
+<!-- 6: BESS -->
+<button class="schematic-node absolute left-[223px] top-[116px] -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#0F8B7E] text-white font-code-spec-sm text-[11px] font-semibold flex items-center justify-center pointer-events-auto" onclick="selectNode(6)">06</button>
+<!-- 7: BMS -->
+<button class="schematic-node absolute left-[223px] top-[152px] -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#0F8B7E] text-white font-code-spec-sm text-[11px] font-semibold flex items-center justify-center pointer-events-auto" onclick="selectNode(7)">07</button>
+<!-- 8: LT Panel -->
+<button class="schematic-node absolute left-[268px] top-[128px] -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#2D6CDF] text-white font-code-spec-sm text-[11px] font-semibold flex items-center justify-center pointer-events-auto" onclick="selectNode(8)">08</button>
+<!-- 9: DC Fast Charger (SELECTED ACTIVE) -->
+<button class="schematic-node absolute left-[351px] top-[102px] -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#2D6CDF] text-white font-code-spec-sm text-[12px] font-bold flex items-center justify-center pointer-events-auto shadow-md animate-pulse" id="node-9" onclick="selectNode(9)">
+          09
+        </button>
+<!-- 10: Payment Kiosk -->
+<button class="schematic-node absolute left-[399px] top-[136px] -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#2D6CDF] text-white font-code-spec-sm text-[11px] font-semibold flex items-center justify-center pointer-events-auto" onclick="selectNode(10)">10</button>
+<!-- 11: Security Mast -->
+<button class="schematic-node absolute left-[435px] top-[24px] -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#6E56CF] text-white font-code-spec-sm text-[11px] font-semibold flex items-center justify-center pointer-events-auto" onclick="selectNode(11)">11</button>
+<!-- 12: Foundation -->
+<button class="schematic-node absolute left-[240px] top-[228px] -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#8A7B6A] text-white font-code-spec-sm text-[11px] font-semibold flex items-center justify-center pointer-events-auto" onclick="selectNode(12)">12</button>
+<!-- 13: Transformer -->
+<button class="schematic-node absolute left-[498px] top-[120px] -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#8A7B6A] text-white font-code-spec-sm text-[11px] font-semibold flex items-center justify-center pointer-events-auto" onclick="selectNode(13)">13</button>
+</div>
+</div>
+<!-- Pan Helper Indicator Pill -->
+<div class="flex items-center justify-between px-3 py-1.5 bg-surface-container/60 text-on-surface-variant font-code-spec-sm text-[10px]">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">swipe</span>
+<span>Swipe horizontally to inspect full corridor span</span>
+</span>
+<span class="font-code-spec-sm text-primary font-medium">POINT 09 SELECTED</span>
+</div>
+</div>
+<!-- Mobile Bottom-Sheet / Active Subsystem Inspector Card -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md flex flex-col space-y-2.5 relative" id="inspector-card">
+<!-- Grabber Handle -->
+<div class="w-10 h-1 bg-surface-container-highest rounded-full mx-auto self-center -mt-1 mb-1"></div>
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-headline-sm text-headline-sm text-on-surface tracking-tight" id="inspector-title">09 · DC Fast Charger (80 kW)</span>
+</div>
+<div class="flex items-center gap-1.5 mt-1">
+<span class="px-2 py-0.5 rounded-full bg-[#2D6CDF]/10 text-[#2D6CDF] font-code-spec-sm text-code-spec-sm font-medium" id="inspector-stage">
+            Stage 03: Distribution &amp; delivery
+          </span>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant" id="inspector-tag">DISPENSER-01</span>
+</div>
+</div>
+<span class="w-2.5 h-2.5 rounded-full bg-[#2D6CDF] mt-1 shrink-0"></span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed" id="inspector-desc">
+      Converts power to direct current (DC) and charges electric vehicles quickly. Dual CCS2 liquid-cooled guns with smart dynamic load-balancing algorithm.
+    </p>
+<div class="pt-1 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant uppercase">Initial Capex</span>
+<span class="font-code-metric-lg text-code-metric-lg text-on-surface font-semibold" id="inspector-price">₹18,00,000</span>
+</div>
+<a class="h-9 px-4 rounded-lg bg-inverse-surface text-inverse-on-surface font-body-sm text-body-sm font-medium flex items-center gap-1 active:opacity-90" data-path="part-09" href="#">
+<span>View details</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Horizontal Scrolling Stage Filter Chips -->
+<div class="flex flex-col space-y-1.5">
+<div class="flex items-center justify-between">
+<span class="font-code-spec-sm text-code-spec-sm uppercase tracking-wider text-on-surface-variant">Filter by Power Stage</span>
+<span class="font-code-spec-sm text-code-spec-sm text-primary font-medium">5 STAGES</span>
+</div>
+<div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+<button class="stage-chip shrink-0 px-3 py-1.5 rounded-full bg-surface-container-lowest text-on-surface font-code-spec-sm text-code-spec-sm flex items-center gap-1.5 whitespace-nowrap active:bg-surface-container">
+<span class="w-2 h-2 rounded-full bg-[#E8A317]"></span>
+<span>Stage 01: Generation (04)</span>
+</button>
+<button class="stage-chip shrink-0 px-3 py-1.5 rounded-full bg-surface-container-lowest text-on-surface font-code-spec-sm text-code-spec-sm flex items-center gap-1.5 whitespace-nowrap active:bg-surface-container">
+<span class="w-2 h-2 rounded-full bg-[#0F8B7E]"></span>
+<span>Stage 02: Conversion &amp; storage (03)</span>
+</button>
+<button class="stage-chip shrink-0 px-3 py-1.5 rounded-full bg-surface-container-lowest text-on-surface font-code-spec-sm text-code-spec-sm flex items-center gap-1.5 whitespace-nowrap active:bg-surface-container">
+<span class="w-2 h-2 rounded-full bg-[#2D6CDF]"></span>
+<span>Stage 03: Distribution &amp; delivery (03)</span>
+</button>
+<button class="stage-chip shrink-0 px-3 py-1.5 rounded-full bg-surface-container-lowest text-on-surface font-code-spec-sm text-code-spec-sm flex items-center gap-1.5 whitespace-nowrap active:bg-surface-container">
+<span class="w-2 h-2 rounded-full bg-[#6E56CF]"></span>
+<span>Stage 04: Protection &amp; ops (01)</span>
+</button>
+<button class="stage-chip shrink-0 px-3 py-1.5 rounded-full bg-surface-container-lowest text-on-surface font-code-spec-sm text-code-spec-sm flex items-center gap-1.5 whitespace-nowrap active:bg-surface-container">
+<span class="w-2 h-2 rounded-full bg-[#8A7B6A]"></span>
+<span>Stage 05: Civil base (02)</span>
+</button>
+</div>
+</div>
+<!-- 4 Key Stat Cards (2x2 Grid) -->
+<div class="grid grid-cols-2 gap-space-xs">
+<div class="p-3 rounded-lg bg-surface-container-lowest flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant font-code-spec-sm text-code-spec-sm">
+<span>GEN-01</span>
+<span class="w-2 h-2 rounded-full bg-[#E8A317]"></span>
+</div>
+<div class="mt-2">
+<span class="font-code-metric-lg text-code-metric-lg text-on-surface font-semibold block leading-tight">55 kWp</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Solar Capacity</span>
+</div>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-lowest flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant font-code-spec-sm text-code-spec-sm">
+<span>BESS-02</span>
+<span class="w-2 h-2 rounded-full bg-[#0F8B7E]"></span>
+</div>
+<div class="mt-2">
+<span class="font-code-metric-lg text-code-metric-lg text-on-surface font-semibold block leading-tight">57.5 kWh</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">LFP Storage</span>
+</div>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-lowest flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant font-code-spec-sm text-code-spec-sm">
+<span>EVSE-03</span>
+<span class="w-2 h-2 rounded-full bg-[#2D6CDF]"></span>
+</div>
+<div class="mt-2">
+<span class="font-code-metric-lg text-code-metric-lg text-on-surface font-semibold block leading-tight">80 kW</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">DC Fast Charger</span>
+</div>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-lowest flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant font-code-spec-sm text-code-spec-sm">
+<span>LCC-TOTAL</span>
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+</div>
+<div class="mt-2">
+<span class="font-code-metric-lg text-code-metric-lg text-on-surface font-semibold block leading-tight">₹2.44 cr</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">30-Yr Capex+Opex</span>
+</div>
+</div>
+</div>
+<!-- The 13 Parts: Single Column Structured Subsystems -->
+<div class="flex flex-col space-y-space-md pt-space-xs">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">The 13 Parts</h2>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">TOTAL BOM: ₹65,20,000</span>
+</div>
+<!-- Stage 01 Group -->
+<div class="flex flex-col space-y-2">
+<div class="flex items-center justify-between py-1 bg-surface-container-low px-2 rounded">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-[#E8A317]"></span>
+<span class="font-code-spec-sm text-code-spec-sm font-semibold uppercase text-on-surface">Stage 01 · Generation</span>
+</div>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">₹20,52,500</span>
+</div>
+<!-- Item 1 -->
+<div class="part-item p-3 rounded-lg bg-surface-container-lowest flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors" onclick="selectNode(1)">
+<div class="flex items-center gap-3 min-w-0">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-code-spec-sm text-code-spec-sm font-medium shrink-0">1</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Solar panels</span>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">PV-CANOPY · 100x 550W Bi-facial</span>
+</div>
+</div>
+<span class="font-code-metric-md text-code-metric-md text-on-surface font-medium shrink-0 ml-2">₹10,72,500</span>
+</div>
+<!-- Item 2 -->
+<div class="part-item p-3 rounded-lg bg-surface-container-lowest flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors" onclick="selectNode(2)">
+<div class="flex items-center gap-3 min-w-0">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-code-spec-sm text-code-spec-sm font-medium shrink-0">2</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Steel canopy structure</span>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">STEEL-STR · Hot-dip Galvanized</span>
+</div>
+</div>
+<span class="font-code-metric-md text-code-metric-md text-on-surface font-medium shrink-0 ml-2">₹6,50,000</span>
+</div>
+<!-- Item 3 -->
+<div class="part-item p-3 rounded-lg bg-surface-container-lowest flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors" onclick="selectNode(3)">
+<div class="flex items-center gap-3 min-w-0">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-code-spec-sm text-code-spec-sm font-medium shrink-0">3</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Solar cleaning robot</span>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">ROBOT-DRY · Autonomous Tracked</span>
+</div>
+</div>
+<span class="font-code-metric-md text-code-metric-md text-on-surface font-medium shrink-0 ml-2">₹1,85,000</span>
+</div>
+<!-- Item 4 -->
+<div class="part-item p-3 rounded-lg bg-surface-container-lowest flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors" onclick="selectNode(4)">
+<div class="flex items-center gap-3 min-w-0">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-code-spec-sm text-code-spec-sm font-medium shrink-0">4</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">DC combiner &amp; cabling</span>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">DC-HARNESS · 1500V UV-Proof Cable</span>
+</div>
+</div>
+<span class="font-code-metric-md text-code-metric-md text-on-surface font-medium shrink-0 ml-2">₹1,45,000</span>
+</div>
+</div>
+<!-- Stage 02 Group -->
+<div class="flex flex-col space-y-2">
+<div class="flex items-center justify-between py-1 bg-surface-container-low px-2 rounded">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-[#0F8B7E]"></span>
+<span class="font-code-spec-sm text-code-spec-sm font-semibold uppercase text-on-surface">Stage 02 · Conversion &amp; Storage</span>
+</div>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">₹19,52,500</span>
+</div>
+<!-- Item 5 -->
+<div class="part-item p-3 rounded-lg bg-surface-container-lowest flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors" onclick="selectNode(5)">
+<div class="flex items-center gap-3 min-w-0">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-code-spec-sm text-code-spec-sm font-medium shrink-0">5</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Solar string inverter</span>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">MPPT-INV · 60 kW 3-Phase Multi-MPPT</span>
+</div>
+</div>
+<span class="font-code-metric-md text-code-metric-md text-on-surface font-medium shrink-0 ml-2">₹4,20,000</span>
+</div>
+<!-- Item 6 -->
+<div class="part-item p-3 rounded-lg bg-surface-container-lowest flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors" onclick="selectNode(6)">
+<div class="flex items-center gap-3 min-w-0">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-code-spec-sm text-code-spec-sm font-medium shrink-0">6</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Battery energy storage</span>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">BESS-LFP · 57.5 kWh Tier-1 Cells</span>
+</div>
+</div>
+<span class="font-code-metric-md text-code-metric-md text-on-surface font-medium shrink-0 ml-2">₹13,22,500</span>
+</div>
+<!-- Item 7 -->
+<div class="part-item p-3 rounded-lg bg-surface-container-lowest flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors" onclick="selectNode(7)">
+<div class="flex items-center gap-3 min-w-0">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-code-spec-sm text-code-spec-sm font-medium shrink-0">7</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Battery management system</span>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">BMS-CTR · Active Balancing Architecture</span>
+</div>
+</div>
+<span class="font-code-metric-md text-code-metric-md text-on-surface font-medium shrink-0 ml-2">₹2,10,000</span>
+</div>
+</div>
+<!-- Stage 03 Group -->
+<div class="flex flex-col space-y-2">
+<div class="flex items-center justify-between py-1 bg-surface-container-low px-2 rounded">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-[#2D6CDF]"></span>
+<span class="font-code-spec-sm text-code-spec-sm font-semibold uppercase text-on-surface">Stage 03 · Distribution &amp; Delivery</span>
+</div>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">₹23,55,000</span>
+</div>
+<!-- Item 8 -->
+<div class="part-item p-3 rounded-lg bg-surface-container-lowest flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors" onclick="selectNode(8)">
+<div class="flex items-center gap-3 min-w-0">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-code-spec-sm text-code-spec-sm font-medium shrink-0">8</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Main LT electrical panel</span>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">LT-SWGR · Form 4b Segregation ACB</span>
+</div>
+</div>
+<span class="font-code-metric-md text-code-metric-md text-on-surface font-medium shrink-0 ml-2">₹3,80,000</span>
+</div>
+<!-- Item 9 (HIGHLIGHTED ACTIVE CARD) -->
+<div class="part-item p-3 rounded-lg bg-surface-container-lowest flex items-center justify-between cursor-pointer bg-primary-fixed/20 transition-all" id="card-9" onclick="selectNode(9)">
+<div class="flex items-center gap-3 min-w-0">
+<span class="w-6 h-6 rounded-full bg-[#2D6CDF] text-white flex items-center justify-center font-code-spec-sm text-code-spec-sm font-bold shrink-0">9</span>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-body-md text-body-md text-on-surface font-semibold truncate">DC fast charger (80 kW)</span>
+<span class="px-1.5 py-0.2 rounded bg-[#2D6CDF] text-white text-[9px] font-code-spec-sm font-medium">ACTIVE</span>
+</div>
+<span class="font-code-spec-sm text-code-spec-sm text-[#2D6CDF] font-medium">DISPENSER-01 · Dual CCS2 Guns</span>
+</div>
+</div>
+<span class="font-code-metric-md text-code-metric-md text-on-surface font-bold shrink-0 ml-2">₹18,00,000</span>
+</div>
+<!-- Item 10 -->
+<div class="part-item p-3 rounded-lg bg-surface-container-lowest flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors" onclick="selectNode(10)">
+<div class="flex items-center gap-3 min-w-0">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-code-spec-sm text-code-spec-sm font-medium shrink-0">10</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Payment kiosk</span>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">PAY-KIOSK · UPI / RFID / IP65</span>
+</div>
+</div>
+<span class="font-code-metric-md text-code-metric-md text-on-surface font-medium shrink-0 ml-2">₹1,75,000</span>
+</div>
+</div>
+<!-- Stage 04 Group -->
+<div class="flex flex-col space-y-2">
+<div class="flex items-center justify-between py-1 bg-surface-container-low px-2 rounded">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-[#6E56CF]"></span>
+<span class="font-code-spec-sm text-code-spec-sm font-semibold uppercase text-on-surface">Stage 04 · Protection &amp; Operations</span>
+</div>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">₹1,20,000</span>
+</div>
+<!-- Item 11 -->
+<div class="part-item p-3 rounded-lg bg-surface-container-lowest flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors" onclick="selectNode(11)">
+<div class="flex items-center gap-3 min-w-0">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-code-spec-sm text-code-spec-sm font-medium shrink-0">11</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">CCTV &amp; sensor mast</span>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">SEC-MAST · 360° AI Anomaly Mast</span>
+</div>
+</div>
+<span class="font-code-metric-md text-code-metric-md text-on-surface font-medium shrink-0 ml-2">₹1,20,000</span>
+</div>
+</div>
+<!-- Stage 05 Group -->
+<div class="flex flex-col space-y-2">
+<div class="flex items-center justify-between py-1 bg-surface-container-low px-2 rounded">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-[#8A7B6A]"></span>
+<span class="font-code-spec-sm text-code-spec-sm font-semibold uppercase text-on-surface">Stage 05 · Foundation &amp; Civil</span>
+</div>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">₹12,15,000</span>
+</div>
+<!-- Item 12 -->
+<div class="part-item p-3 rounded-lg bg-surface-container-lowest flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors" onclick="selectNode(12)">
+<div class="flex items-center gap-3 min-w-0">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-code-spec-sm text-code-spec-sm font-medium shrink-0">12</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Concrete foundation &amp; plinth</span>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">CIVIL-BASE · M25 Reinforced Foundation</span>
+</div>
+</div>
+<span class="font-code-metric-md text-code-metric-md text-on-surface font-medium shrink-0 ml-2">₹4,65,000</span>
+</div>
+<!-- Item 13 -->
+<div class="part-item p-3 rounded-lg bg-surface-container-lowest flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors" onclick="selectNode(13)">
+<div class="flex items-center gap-3 min-w-0">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-code-spec-sm text-code-spec-sm font-medium shrink-0">13</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Transformer &amp; grid tie</span>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">TX-100KVA · 11kV/415V Compact Sub</span>
+</div>
+</div>
+<span class="font-code-metric-md text-code-metric-md text-on-surface font-medium shrink-0 ml-2">₹7,50,000</span>
+</div>
+</div>
+</div>
+<!-- Engineering Footnote & Compliance Banner -->
+<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col space-y-1.5 mt-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-code-spec-sm text-code-spec-sm">
+<span class="material-symbols-outlined text-[16px] text-secondary">verified</span>
+<span class="font-medium text-on-surface">CEA &amp; ARAI AIS-138 COMPLIANT</span>
+</div>
+<span class="font-code-spec-sm text-code-spec-sm text-on-surface-variant">ISO 15118 PnC</span>
+</div>
+<p class="font-code-spec-sm text-[11px] text-on-surface-variant leading-normal">
+      Civil load bearing calculated for 160 km/h wind shear corridor conditions. Lifecycle capex model accommodates 10-year battery repowering schedule.
+    </p>
+</div>
+</div>
+<script>
+  const partsData = {
+    1: { id: "01", name: "Solar panels (55 kWp)", stage: "Stage 01: Generation", code: "PV-CANOPY", price: "₹10,72,500", desc: "Monocrystalline bifacial panels with anti-reflective coating, generating up to 210 kWh daily in highway solar irradiance." },
+    2: { id: "02", name: "Steel canopy structure", stage: "Stage 01: Generation", code: "STEEL-STR", price: "₹6,50,000", desc: "Engineered galvanized high-tensile structural framework engineered to withstand Category 3 highway crosswinds." },
+    3: { id: "03", name: "Solar cleaning robot", stage: "Stage 01: Generation", code: "ROBOT-DRY", price: "₹1,85,000", desc: "Waterless autonomous brush robot with automated daily cleaning schedules to eliminate highway dust soiling losses." },
+    4: { id: "04", name: "DC combiner & cabling", stage: "Stage 01: Generation", code: "DC-HARNESS", price: "₹1,45,000", desc: "1500V DC rated solar cables and integrated combiner box equipped with Type II surge protection and string monitoring." },
+    5: { id: "05", name: "Solar string inverter", stage: "Stage 02: Conversion & storage", code: "MPPT-INV", price: "₹4,20,000", desc: "High-efficiency grid-tied inverter converting variable DC into 415V 3-phase AC power with multi-MPPT tracking." },
+    6: { id: "06", name: "Battery energy storage", stage: "Stage 02: Conversion & storage", code: "BESS-LFP", price: "₹13,22,500", desc: "57.5 kWh Lithium Iron Phosphate (LFP) high C-rate energy storage for evening peak shaving and grid stabilization." },
+    7: { id: "07", name: "Battery management system", stage: "Stage 02: Conversion & storage", code: "BMS-CTR", price: "₹2,10,000", desc: "Precision active cell balancing, dual fire-suppression interface, and predictive state-of-health telemetry." },
+    8: { id: "08", name: "Main LT electrical panel", stage: "Stage 03: Distribution & delivery", code: "LT-SWGR", price: "₹3,80,000", desc: "Air circuit breaker (ACB) distribution panel with motorized interlocking between solar, grid, and battery sources." },
+    9: { id: "09", name: "DC Fast Charger (80 kW)", stage: "Stage 03: Distribution & delivery", code: "DISPENSER-01", price: "₹18,00,000", desc: "Converts power to direct current (DC) and charges electric vehicles quickly. Dual CCS2 liquid-cooled guns with smart dynamic load-balancing algorithm." },
+    10: { id: "10", name: "Payment kiosk", stage: "Stage 03: Distribution & delivery", code: "PAY-KIOSK", price: "₹1,75,000", desc: "All-weather IP65 payment terminal accepting FASTag, UPI, and credit cards with thermal receipt issuance." },
+    11: { id: "11", name: "CCTV & sensor mast", stage: "Stage 04: Protection & ops", code: "SEC-MAST", price: "₹1,20,000", desc: "360-degree pan-tilt surveillance dome, pyranometer sensor, and emergency SOS intercom linking to corridor command." },
+    12: { id: "12", name: "Concrete foundation & plinth", stage: "Stage 05: Foundation & civil", code: "CIVIL-BASE", price: "₹4,65,000", desc: "M25 high-grade cast plinths with internal cable trenches and drainage grading preventing highway flooding." },
+    13: { id: "13", name: "Transformer & grid tie", stage: "Stage 05: Foundation & civil", code: "TX-100KVA", price: "₹7,50,000", desc: "100 kVA step-down distribution transformer linking station directly into the 11 kV state highway utility corridor." }
+  };
+
+  function selectNode(id) {
+    const data = partsData[id];
+    if (!data) return;
+
+    // Update inspector bottom sheet
+    document.getElementById("inspector-title").textContent = data.id + " · " + data.name;
+    document.getElementById("inspector-stage").textContent = data.stage;
+    document.getElementById("inspector-tag").textContent = data.code;
+    document.getElementById("inspector-desc").textContent = data.desc;
+    document.getElementById("inspector-price").textContent = data.price;
+
+    // Update schematic visual state
+    document.querySelectorAll(".schematic-node").forEach(btn => {
+      btn.classList.remove("shadow-md", "animate-pulse");
+    });
+    const activeNodeBtn = document.getElementById("node-" + id);
+    if (activeNodeBtn) {
+      activeNodeBtn.classList.add("shadow-md", "animate-pulse");
+    }
+
+    // Scroll inspector into smooth view if requested
+    const inspector = document.getElementById("inspector-card");
+    if (inspector) {
+      inspector.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  // Explode view interaction animation trigger
+  const btnExplode = document.getElementById("btn-explode");
+  if (btnExplode) {
+    let exploded = false;
+    btnExplode.addEventListener("click", () => {
+      exploded = !exploded;
+      btnExplode.innerHTML = exploded 
+        ? `<span class="material-symbols-outlined text-[18px]">compress</span><span>Compact view</span>`
+        : `<span class="material-symbols-outlined text-[18px]">view_in_ar</span><span>Explode view</span>`;
+      
+      const viewport = document.getElementById("schematic-viewport");
+      if (viewport) {
+        viewport.style.transform = exploded ? "scale(1.02)" : "scale(1)";
+        viewport.style.transition = "transform 0.25s ease-out";
+      }
+    });
+  }
+</script><footer class="mt-space-lg px-gutter-mobile py-space-md flex flex-col gap-space-xs bg-surface-container-low text-on-surface-variant"><div class="flex items-center justify-between"><div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span><span class="font-code-spec-sm text-code-spec-sm uppercase">REV.2026-NH48-LIVE</span></div><a class="font-code-spec-sm text-code-spec-sm underline text-secondary hover:text-on-surface transition-colors" data-path="technical-glossary" href="#">GLOSSARY / DEFINITIONS</a></div><p class="font-code-spec-sm text-code-spec-sm leading-tight text-on-surface-variant">All equipment pricing and load factors are estimates as of Nov 2026. Bureau of Energy Efficiency compliance certified.</p></footer></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]" data-active-classes="text-primary font-medium"><div class="h-16 px-gutter-mobile flex justify-around items-center"><a aria-current="page" class="flex flex-col items-center justify-center w-12 h-12 transition-colors text-primary font-medium" data-path="spec-overview" href="#"><span class="material-symbols-outlined text-[22px]">memory</span><span class="font-code-spec-sm text-[10px] tracking-tight mt-0.5">Overview</span></a><a class="flex flex-col items-center justify-center w-12 h-12 text-on-surface-variant hover:text-on-surface transition-colors" data-path="power-stages" href="#"><span class="material-symbols-outlined text-[22px]">solar_power</span><span class="font-code-spec-sm text-[10px] tracking-tight mt-0.5">Stages</span></a><a class="flex flex-col items-center justify-center w-12 h-12 text-on-surface-variant hover:text-on-surface transition-colors" data-path="corridor-telemetry" href="#"><span class="material-symbols-outlined text-[22px]">monitoring</span><span class="font-code-spec-sm text-[10px] tracking-tight mt-0.5">Telemetry</span></a><a class="flex flex-col items-center justify-center w-12 h-12 text-on-surface-variant hover:text-on-surface transition-colors" data-path="bom-datasheet" href="#"><span class="material-symbols-outlined text-[22px]">receipt_long</span><span class="font-code-spec-sm text-[10px] tracking-tight mt-0.5">BOM</span></a><a class="flex flex-col items-center justify-center w-12 h-12 text-on-surface-variant hover:text-on-surface transition-colors" data-path="technical-glossary" href="#"><span class="material-symbols-outlined text-[22px]">menu_book</span><span class="font-code-spec-sm text-[10px] tracking-tight mt-0.5">Glossary</span></a></div></nav></body></html>
